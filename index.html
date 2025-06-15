@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>เว็บจัดการงานรายสัปดาห์</title>
+    <title>DayWork</title>
     <!-- Google Fonts: 'Sarabun' (TH) และ 'Inter' (EN) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -42,6 +42,51 @@
         }
         .month-selectors select:focus {
             border-color: #2176ae;
+        }
+        .day-slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            user-select: none;
+        }
+        .day-slider-btn {
+            background: #d2eafd;
+            border: 1.5px solid #b3d8ef;
+            color: #2176ae;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            font-size: 1.4em;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.13s, border 0.13s, color 0.13s;
+            outline: none;
+        }
+        .day-slider-btn:disabled {
+            opacity: 0.5;
+            cursor: default;
+            background: #eaf6fb;
+            color: #b3d8ef;
+            border-color: #eaf6fb;
+        }
+        .day-slider-current {
+            font-size: 1.18em;
+            font-weight: 600;
+            color: #2176ae;
+            background: #f4fbff;
+            border-radius: 12px;
+            padding: 7px 22px;
+            border: 1.5px solid #b3d8ef;
+            min-width: 72px;
+            text-align: center;
+            letter-spacing: 0.05em;
+            box-shadow: 0 1px 4px rgba(33,118,174,0.04);
         }
         .day-buttons {
             display: flex;
@@ -280,22 +325,195 @@
             .task-table { padding: 12px 8px; }
             .images { gap: 7px; }
         }
+        .add-table-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 24px auto 0 auto;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #d2eafd;
+            border: 2px solid #b3d8ef;
+            color: #2176ae;
+            font-size: 2.1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(33,118,174,0.07);
+            transition: background 0.15s, border 0.15s, color 0.15s;
+            outline: none;
+        }
+        .add-table-btn:hover, .add-table-btn:focus {
+            background: #b3d8ef;
+            color: #145a8a;
+            border-color: #2176ae;
+        }
+        .main-home {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #eaf6fb;
+        }
+        .main-home h1 {
+            font-size: 2.3em;
+            color: #2176ae;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .main-home .creator {
+            font-size: 1.08em;
+            color: #2176ae;
+            margin-bottom: 36px;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+        }
+        .main-home .go-btn {
+            background: #2176ae;
+            color: #fff;
+            border: none;
+            border-radius: 28px;
+            padding: 18px 54px;
+            font-size: 1.25em;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 12px rgba(33,118,174,0.09);
+            transition: background 0.18s, box-shadow 0.18s;
+            margin-top: 10px;
+        }
+        .main-home .go-btn:hover, .main-home .go-btn:focus {
+            background: #145a8a;
+            box-shadow: 0 4px 24px rgba(33,118,174,0.13);
+        }
+        .hidden { display: none !important; }
+        .side-menu-btn {
+            position: fixed;
+            top: 18px;
+            left: 18px;
+            z-index: 20002;
+            background: #d2eafd;
+            color: #2176ae;
+            border: 2px solid #b3d8ef;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.7em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(33,118,174,0.07);
+            transition: background 0.15s, border 0.15s, color 0.15s, left 0.18s;
+            outline: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .side-menu-btn.menu-open {
+            left: 238px; /* 220px (menu width) + 18px gap */
+            /* On mobile, adjust below */
+        }
+        @media (max-width: 600px) {
+            .side-menu {
+                width: 80vw;
+                min-width: 140px;
+            }
+            .side-menu-btn.menu-open {
+                left: calc(80vw + 18px);
+            }
+        }
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 220px;
+            height: 100vh;
+            background: #f4fbff;
+            border-right: 2px solid #b3d8ef;
+            box-shadow: 2px 0 16px rgba(33,118,174,0.07);
+            z-index: 20000;
+            display: none;
+            flex-direction: column;
+            padding-top: 0;
+            animation: sideMenuIn 0.18s;
+        }
+        .side-menu.active {
+            display: flex;
+        }
+        .side-menu-header {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2176ae;
+            padding: 28px 0 18px 28px;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+            border-bottom: 1px solid #eaf6fb;
+            margin-bottom: 8px;
+        }
+        .side-menu-link {
+            background: none;
+            border: none;
+            color: #2176ae;
+            font-size: 1.08em;
+            text-align: left;
+            padding: 14px 28px;
+            cursor: pointer;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+            transition: background 0.13s, color 0.13s;
+            border-radius: 0 18px 18px 0;
+        }
+        .side-menu-link:hover, .side-menu-link:focus {
+            background: #d2eafd;
+            color: #145a8a;
+        }
+        @keyframes sideMenuIn {
+            from { transform: translateX(-40px); opacity: 0.2; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        #main-app-content {
+            /* for spacing if menu open on mobile */
+        }
+        @media (max-width: 600px) {
+            .side-menu {
+                width: 80vw;
+                min-width: 140px;
+            }
+            #main-app-content {
+                padding-left: 0 !important;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>เว็บจัดการงานรายเดือน</h1>
-    <div class="month-selectors">
-        <select id="month-select" onchange="changeMonthYear()"></select>
-        <select id="year-select" onchange="changeMonthYear()"></select>
+    <div id="main-home" class="main-home">
+        <h1>Welcome To DayWork.</h1>
+        <div class="creator">ผู้สร้างคือ Thananchai</div>
+        <button class="go-btn" onclick="showMainApp()">จัดการงาน</button>
     </div>
-    <div class="day-buttons" id="day-buttons">
-        <!-- ปุ่มวันจะแสดงที่นี่ -->
+    <div id="main-app" class="hidden">
+        <!-- เมนูซ้ายบน -->
+        <button id="side-menu-btn" class="side-menu-btn" onclick="toggleSideMenu()" aria-label="เมนู">&#9776;</button>
+        <nav id="side-menu" class="side-menu">
+            <div class="side-menu-header">DayWork</div>
+            <button class="side-menu-link" onclick="goHome()">หน้าหลัก</button>
+            <button class="side-menu-link" onclick="goManage()">หน้าจัดการงาน</button>
+        </nav>
+        <div id="main-app-content">
+            <h1>DayWork</h1>
+            <div class="month-selectors">
+                <select id="month-select" onchange="changeMonthYear()"></select>
+                <select id="year-select" onchange="changeMonthYear()"></select>
+            </div>
+            <div class="day-slider-container" id="day-slider">
+                <!-- สไลด์เลือกวันจะแสดงที่นี่ -->
+            </div>
+            <div class="tables-container" id="tables-container">
+                <!-- ตารางงานจะแสดงที่นี่ -->
+            </div>
+            <input type="file" id="img-upload" style="display:none" accept="image/*" multiple onchange="handleImageUpload(event)">
+            <div id="img-modal" style="display:none"></div>
+        </div>
     </div>
-    <div class="tables-container" id="tables-container">
-        <!-- ตารางงานจะแสดงที่นี่ -->
-    </div>
-    <input type="file" id="img-upload" style="display:none" accept="image/*" multiple onchange="handleImageUpload(event)">
-    <div id="img-modal" style="display:none"></div>
     <script>
         // --- Config ---
         const monthNames = [
@@ -361,23 +579,51 @@
             currentMonth = parseInt(document.getElementById('month-select').value);
             currentYear = parseInt(document.getElementById('year-select').value);
             currentDay = 1;
-            renderDayButtons();
+            renderDaySlider();
             renderTables();
             saveToStorage();
         }
 
-        // --- UI: Day Buttons ---
-        function renderDayButtons() {
-            const dayBtns = document.getElementById('day-buttons');
+        // --- UI: Day Slider ---
+        function renderDaySlider() {
+            const slider = document.getElementById('day-slider');
             const numDays = daysInMonth(currentMonth, currentYear);
-            dayBtns.innerHTML = '';
-            for (let d = 1; d <= numDays; d++) {
-                const btn = document.createElement('button');
-                btn.textContent = d;
-                btn.className = (d === currentDay) ? 'selected' : '';
-                btn.onclick = () => { currentDay = d; renderDayButtons(); renderTables(); };
-                dayBtns.appendChild(btn);
-            }
+
+            // ปุ่มย้อน
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'day-slider-btn';
+            prevBtn.innerHTML = '&lt;';
+            prevBtn.onclick = () => {
+                if (currentDay > 1) {
+                    currentDay--;
+                    renderDaySlider();
+                    renderTables();
+                }
+            };
+            prevBtn.disabled = currentDay <= 1;
+
+            // ปุ่มถัดไป
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'day-slider-btn';
+            nextBtn.innerHTML = '&gt;';
+            nextBtn.onclick = () => {
+                if (currentDay < numDays) {
+                    currentDay++;
+                    renderDaySlider();
+                    renderTables();
+                }
+            };
+            nextBtn.disabled = currentDay >= numDays;
+
+            // แสดงวันปัจจุบัน
+            const dayLabel = document.createElement('span');
+            dayLabel.className = 'day-slider-current';
+            dayLabel.textContent = `วันที่ ${currentDay}`;
+
+            slider.innerHTML = '';
+            slider.appendChild(prevBtn);
+            slider.appendChild(dayLabel);
+            slider.appendChild(nextBtn);
         }
 
         // --- Data helpers ---
@@ -494,20 +740,11 @@
                 container.appendChild(div);
             });
 
-            // ปุ่มเพิ่มตาราง (ทุกวัน)
+            // ปุ่มเพิ่มตาราง (ทุกวัน) เป็นปุ่ม + วงกลมสีฟ้าอ่อน
             const addBtn = document.createElement('button');
-            addBtn.textContent = '+ เพิ่มตาราง';
-            addBtn.style.display = 'block';
-            addBtn.style.margin = '24px auto 0 auto';
-            addBtn.style.padding = '12px 32px';
-            addBtn.style.fontSize = '1.1em';
-            addBtn.style.background = '#f5f5f5';
-            addBtn.style.border = '1px solid #e0e0e0';
-            addBtn.style.borderRadius = '10px';
-            addBtn.style.cursor = 'pointer';
-            addBtn.style.color = '#333';
-            addBtn.onmouseover = function() { addBtn.style.background = '#e0e0e0'; };
-            addBtn.onmouseout = function() { addBtn.style.background = '#f5f5f5'; };
+            addBtn.className = 'add-table-btn';
+            addBtn.title = 'เพิ่มตาราง';
+            addBtn.innerHTML = '<span aria-label="เพิ่มตาราง" style="line-height:1;">+</span>';
             addBtn.onclick = function() {
                 getDayTables().push({
                     title: `ตารางที่ ${tables.length + 1}`,
@@ -626,11 +863,57 @@
             document.body.style.overflow = '';
         }
 
+        // --- Side Menu logic ---
+        function toggleSideMenu() {
+            const menu = document.getElementById('side-menu');
+            const btn = document.getElementById('side-menu-btn');
+            menu.classList.toggle('active');
+            btn.classList.toggle('menu-open', menu.classList.contains('active'));
+        }
+        function closeSideMenu() {
+            document.getElementById('side-menu').classList.remove('active');
+            document.getElementById('side-menu-btn').classList.remove('menu-open');
+        }
+        // ปิดเมนูเมื่อคลิกข้างนอก
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('side-menu');
+            const btn = document.getElementById('side-menu-btn');
+            if (!menu.contains(e.target) && e.target !== btn) {
+                menu.classList.remove('active');
+                btn.classList.remove('menu-open');
+            }
+        });
+
+        // --- Navigation ---
+        function goHome() {
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('main-home').classList.remove('hidden');
+            closeSideMenu();
+        }
+        function goManage() {
+            document.getElementById('main-home').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            closeSideMenu();
+            // ป้องกัน render ซ้ำ
+            if (!window._dayworkAppLoaded) {
+                renderMonthYearSelectors();
+                renderDaySlider();
+                renderTables();
+                window._dayworkAppLoaded = true;
+            }
+        }
+
+        // --- Main/Home logic ---
+        function showMainApp() {
+            goManage();
+        }
+
         // --- Initial load ---
         loadFromStorage();
-        renderMonthYearSelectors();
-        renderDayButtons();
-        renderTables();
+        // ไม่แสดง main-app ทันที
+        // renderMonthYearSelectors();
+        // renderDaySlider();
+        // renderTables();
     </script>
 </body>
 </html>
