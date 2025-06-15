@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Sarabun', 'Inter', 'Segoe UI', 'Prompt', Arial, sans-serif;
-            background: #f7f7f9;
+            background: #eaf6fb; /* ฟ้าอ่อน */
             margin: 0;
             padding: 0;
             font-size: 1.04em;
@@ -18,7 +18,7 @@
         h1 {
             text-align: center;
             margin-top: 32px;
-            color: #222;
+            color: #2176ae;
             font-weight: 600;
             letter-spacing: 0.5px;
             font-family: 'Sarabun', 'Inter', Arial, sans-serif;
@@ -34,14 +34,14 @@
             font-size: 1em;
             padding: 6px 16px;
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            background: #fff;
-            color: #333;
+            border: 1px solid #b3d8ef;
+            background: #f4fbff;
+            color: #2176ae;
             outline: none;
             transition: border 0.15s;
         }
         .month-selectors select:focus {
-            border-color: #bdbdbd;
+            border-color: #2176ae;
         }
         .day-buttons {
             display: flex;
@@ -54,25 +54,27 @@
             margin-right: auto;
         }
         .day-buttons button {
-            background: #fff;
-            border: 1px solid #e0e0e0;
+            background: #f4fbff;
+            border: 1px solid #b3d8ef;
             border-radius: 18px;
             padding: 8px 20px;
             font-size: 1em;
-            color: #333;
+            color: #2176ae;
             cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+            box-shadow: 0 1px 2px rgba(33,118,174,0.03);
         }
         .day-buttons button:hover, .day-buttons button:focus {
-            background: #f0f0f0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            background: #d2eafd;
+            border-color: #2176ae;
+            box-shadow: 0 2px 8px rgba(33,118,174,0.08);
             outline: none;
         }
         .day-buttons button.selected {
-            background: #e0e0e0;
-            color: #222;
+            background: #b3d8ef;
+            color: #145a8a;
             font-weight: 600;
+            border-color: #2176ae;
         }
         .tables-container {
             margin: 32px auto 0 auto;
@@ -80,45 +82,45 @@
             padding: 0 12px;
         }
         .task-table {
-            background: #fff;
+            background: #f4fbff;
             border-radius: 14px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 12px rgba(33,118,174,0.06);
             padding: 22px 24px 18px 24px;
             margin-bottom: 28px;
             transition: box-shadow 0.2s;
-            border: none;
+            border: 1px solid #b3d8ef;
             position: relative;
         }
         .task-table:hover {
-            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            box-shadow: 0 4px 24px rgba(33,118,174,0.13);
         }
         .task-title {
             font-weight: 500;
             font-size: 1.13em;
-            color: #2d2d2d;
+            color: #2176ae;
             cursor: pointer;
             border-radius: 6px;
             padding: 2px 6px;
             transition: background 0.15s;
         }
         .task-title:hover {
-            background: #f5f5f5;
+            background: #eaf6fb;
         }
         .edit-input {
             width: 100%;
             font-size: 1em;
             padding: 6px 10px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #b3d8ef;
             border-radius: 6px;
             margin-top: 4px;
             margin-bottom: 4px;
-            background: #fafbfc;
-            color: #222;
+            background: #eaf6fb;
+            color: #2176ae;
             outline: none;
             box-sizing: border-box;
         }
         .edit-input:focus {
-            border-color: #bdbdbd;
+            border-color: #2176ae;
             background: #fff;
         }
         .images {
@@ -132,9 +134,9 @@
             max-width: 70px;
             max-height: 70px;
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-            background: #fafafa;
+            border: 1px solid #b3d8ef;
+            box-shadow: 0 1px 4px rgba(33,118,174,0.04);
+            background: #eaf6fb;
         }
         .images > div {
             display: flex;
@@ -156,12 +158,12 @@
             text-decoration: underline;
         }
         .images button {
-            background: #f5f5f5;
-            border: 1px solid #e0e0e0;
+            background: #eaf6fb;
+            border: 1px solid #b3d8ef;
             border-radius: 8px;
             padding: 8px 14px;
             font-size: 0.98em;
-            color: #555;
+            color: #2176ae;
             cursor: pointer;
             transition: background 0.15s, border 0.15s;
             margin-left: 0;
@@ -170,8 +172,8 @@
             align-self: center;
         }
         .images button:hover {
-            background: #e0e0e0;
-            border-color: #bdbdbd;
+            background: #d2eafd;
+            border-color: #2176ae;
         }
         span[ondblclick] {
             cursor: pointer;
@@ -183,7 +185,7 @@
             background: none;
             border: none;
             font-size: 1.5em;
-            color: #bdbdbd;
+            color: #b3d8ef;
             cursor: pointer;
             padding: 0 6px;
             border-radius: 6px;
@@ -191,8 +193,8 @@
             transition: background 0.15s, color 0.15s;
         }
         .menu-btn:hover, .menu-btn:focus {
-            background: #f0f0f0;
-            color: #757575;
+            background: #eaf6fb;
+            color: #2176ae;
             outline: none;
         }
         .menu-popover {
@@ -200,9 +202,9 @@
             top: 38px;
             right: 18px;
             background: #fff;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #b3d8ef;
             border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(33,118,174,0.08);
             min-width: 140px;
             z-index: 10;
             padding: 6px 0;
@@ -218,13 +220,60 @@
             text-align: left;
             padding: 10px 18px;
             font-size: 1em;
-            color: #333;
+            color: #2176ae;
             cursor: pointer;
             border-radius: 0;
             transition: background 0.15s;
         }
         .menu-popover button:hover {
-            background: #f5f5f5;
+            background: #eaf6fb;
+        }
+        .img-modal-bg {
+            position: fixed;
+            z-index: 9999;
+            left: 0; top: 0; right: 0; bottom: 0;
+            background: rgba(33,118,174,0.10);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            /* minimal: no border, no extra shadow */
+        }
+        .img-modal-img {
+            max-width: 96vw;
+            max-height: 90vh;
+            border-radius: 10px;
+            background: #fff;
+            border: none;
+            box-shadow: 0 2px 16px rgba(33,118,174,0.10);
+            animation: imgZoomIn 0.18s;
+            display: block;
+        }
+        .img-modal-close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            background: rgba(255,255,255,0.7);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 1.6em;
+            color: #2176ae;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(33,118,174,0.08);
+            transition: background 0.15s;
+        }
+        .img-modal-close:hover {
+            background: #eaf6fb;
+        }
+        @keyframes imgZoomIn {
+            from { transform: scale(0.92); opacity: 0.2; }
+            to { transform: scale(1); opacity: 1; }
         }
         @media (max-width: 600px) {
             .tables-container { padding: 0 2vw; }
@@ -246,6 +295,7 @@
         <!-- ตารางงานจะแสดงที่นี่ -->
     </div>
     <input type="file" id="img-upload" style="display:none" accept="image/*" multiple onchange="handleImageUpload(event)">
+    <div id="img-modal" style="display:none"></div>
     <script>
         // --- Config ---
         const monthNames = [
@@ -434,7 +484,7 @@
                     <div class="images" id="images-${idx}">
                         ${table.images.map((img, imgIdx) => `
                             <div>
-                                <img src="${img}" alt="img">
+                                <img src="${img}" alt="img" onclick="showImgModal('${encodeURIComponent(img)}')" style="cursor:zoom-in;">
                                 <span class="remove-img-btn" onclick="removeImage(${idx},${imgIdx})">ลบ</span>
                             </div>
                         `).join('')}
@@ -554,6 +604,26 @@
             getDayTables()[tableIdx].images.splice(imgIdx,1);
             renderTables();
             saveToStorage();
+        }
+
+        // --- Image Modal ---
+        function showImgModal(imgData) {
+            const modal = document.getElementById('img-modal');
+            modal.innerHTML = `
+                <div class="img-modal-bg" onclick="hideImgModal(event)">
+                    <button class="img-modal-close" onclick="hideImgModal(event)" title="ปิด">&times;</button>
+                    <img class="img-modal-img" src="${decodeURIComponent(imgData)}" onclick="event.stopPropagation()">
+                </div>
+            `;
+            modal.style.display = '';
+            document.body.style.overflow = 'hidden';
+        }
+        function hideImgModal(e) {
+            if (e) e.stopPropagation();
+            const modal = document.getElementById('img-modal');
+            modal.style.display = 'none';
+            modal.innerHTML = '';
+            document.body.style.overflow = '';
         }
 
         // --- Initial load ---
