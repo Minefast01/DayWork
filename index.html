@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>เว็บจัดการงานรายสัปดาห์</title>
+    <!-- Google Fonts: 'Sarabun' (TH) และ 'Inter' (EN) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', 'Inter', 'Segoe UI', 'Prompt', Arial, sans-serif;
+            background: #f7f7f9;
+            margin: 0;
+            padding: 0;
+            font-size: 1.04em;
+            letter-spacing: 0.01em;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 32px;
+            color: #222;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+        }
+        .month-selectors {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+            margin-bottom: 8px;
+        }
+        .month-selectors select {
+            font-size: 1em;
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            color: #333;
+            outline: none;
+            transition: border 0.15s;
+        }
+        .month-selectors select:focus {
+            border-color: #bdbdbd;
+        }
+        .day-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .day-buttons button {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 18px;
+            padding: 8px 20px;
+            font-size: 1em;
+            color: #333;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .day-buttons button:hover, .day-buttons button:focus {
+            background: #f0f0f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            outline: none;
+        }
+        .day-buttons button.selected {
+            background: #e0e0e0;
+            color: #222;
+            font-weight: 600;
+        }
+        .tables-container {
+            margin: 32px auto 0 auto;
+            max-width: 900px;
+            padding: 0 12px;
+        }
+        .task-table {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            padding: 22px 24px 18px 24px;
+            margin-bottom: 28px;
+            transition: box-shadow 0.2s;
+            border: none;
+            position: relative;
+        }
+        .task-table:hover {
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+        }
+        .task-title {
+            font-weight: 500;
+            font-size: 1.13em;
+            color: #2d2d2d;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 2px 6px;
+            transition: background 0.15s;
+        }
+        .task-title:hover {
+            background: #f5f5f5;
+        }
+        .edit-input {
+            width: 100%;
+            font-size: 1em;
+            padding: 6px 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            background: #fafbfc;
+            color: #222;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .edit-input:focus {
+            border-color: #bdbdbd;
+            background: #fff;
+        }
+        .images {
+            display: flex;
+            gap: 14px;
+            margin-top: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        .images img {
+            max-width: 70px;
+            max-height: 70px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            background: #fafafa;
+        }
+        .images > div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .remove-img-btn {
+            margin-top: 4px;
+            color: #e57373;
+            cursor: pointer;
+            font-size: 0.92em;
+            border: none;
+            background: none;
+            padding: 0;
+            transition: color 0.15s;
+        }
+        .remove-img-btn:hover {
+            color: #b71c1c;
+            text-decoration: underline;
+        }
+        .images button {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.98em;
+            color: #555;
+            cursor: pointer;
+            transition: background 0.15s, border 0.15s;
+            margin-left: 0;
+            margin-top: 0;
+            height: 38px;
+            align-self: center;
+        }
+        .images button:hover {
+            background: #e0e0e0;
+            border-color: #bdbdbd;
+        }
+        span[ondblclick] {
+            cursor: pointer;
+        }
+        .menu-btn {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #bdbdbd;
+            cursor: pointer;
+            padding: 0 6px;
+            border-radius: 6px;
+            z-index: 2;
+            transition: background 0.15s, color 0.15s;
+        }
+        .menu-btn:hover, .menu-btn:focus {
+            background: #f0f0f0;
+            color: #757575;
+            outline: none;
+        }
+        .menu-popover {
+            position: absolute;
+            top: 38px;
+            right: 18px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            min-width: 140px;
+            z-index: 10;
+            padding: 6px 0;
+            display: none;
+        }
+        .menu-popover.active {
+            display: block;
+        }
+        .menu-popover button {
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+            padding: 10px 18px;
+            font-size: 1em;
+            color: #333;
+            cursor: pointer;
+            border-radius: 0;
+            transition: background 0.15s;
+        }
+        .menu-popover button:hover {
+            background: #f5f5f5;
+        }
+        @media (max-width: 600px) {
+            .tables-container { padding: 0 2vw; }
+            .task-table { padding: 12px 8px; }
+            .images { gap: 7px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>เว็บจัดการงานรายเดือน</h1>
+    <div class="month-selectors">
+        <select id="month-select" onchange="changeMonthYear()"></select>
+        <select id="year-select" onchange="changeMonthYear()"></select>
+    </div>
+    <div class="day-buttons" id="day-buttons">
+        <!-- ปุ่มวันจะแสดงที่นี่ -->
+    </div>
+    <div class="tables-container" id="tables-container">
+        <!-- ตารางงานจะแสดงที่นี่ -->
+    </div>
+    <input type="file" id="img-upload" style="display:none" accept="image/*" multiple onchange="handleImageUpload(event)">
+    <script>
+        // --- Config ---
+        const monthNames = [
+            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+        ];
+        const daysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+
+        // --- Data structure ---
+        // weekData[year][month][day] = [ {title, subtitle, images}, ...7 ตาราง ]
+        let monthData = {};
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth();
+        let currentDay = new Date().getDate();
+        let currentTableIdx = null;
+
+        // --- LocalStorage helpers ---
+        const STORAGE_KEY = 'work-schedule-data-v1';
+        const STORAGE_STATE_KEY = 'work-schedule-state-v1';
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(monthData));
+            localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify({
+                year: currentYear,
+                month: currentMonth,
+                day: currentDay
+            }));
+        }
+        function loadFromStorage() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try { monthData = JSON.parse(data) || {}; } catch {}
+            }
+            const state = localStorage.getItem(STORAGE_STATE_KEY);
+            if (state) {
+                try {
+                    const s = JSON.parse(state);
+                    if (s && typeof s.year === 'number' && typeof s.month === 'number' && typeof s.day === 'number') {
+                        currentYear = s.year;
+                        currentMonth = s.month;
+                        currentDay = s.day;
+                    }
+                } catch {}
+            }
+        }
+
+        // --- UI: Month/Year Selectors ---
+        function renderMonthYearSelectors() {
+            const monthSel = document.getElementById('month-select');
+            const yearSel = document.getElementById('year-select');
+            monthSel.innerHTML = monthNames.map((m, i) =>
+                `<option value="${i}" ${i === currentMonth ? 'selected' : ''}>${m}</option>`
+            ).join('');
+            const thisYear = new Date().getFullYear();
+            let years = [];
+            for (let y = thisYear - 3; y <= thisYear + 3; y++) {
+                years.push(`<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y+543}</option>`);
+            }
+            yearSel.innerHTML = years.join('');
+        }
+
+        function changeMonthYear() {
+            currentMonth = parseInt(document.getElementById('month-select').value);
+            currentYear = parseInt(document.getElementById('year-select').value);
+            currentDay = 1;
+            renderDayButtons();
+            renderTables();
+            saveToStorage();
+        }
+
+        // --- UI: Day Buttons ---
+        function renderDayButtons() {
+            const dayBtns = document.getElementById('day-buttons');
+            const numDays = daysInMonth(currentMonth, currentYear);
+            dayBtns.innerHTML = '';
+            for (let d = 1; d <= numDays; d++) {
+                const btn = document.createElement('button');
+                btn.textContent = d;
+                btn.className = (d === currentDay) ? 'selected' : '';
+                btn.onclick = () => { currentDay = d; renderDayButtons(); renderTables(); };
+                dayBtns.appendChild(btn);
+            }
+        }
+
+        // --- Data helpers ---
+        function getDayTables() {
+            if (!monthData[currentYear]) monthData[currentYear] = {};
+            if (!monthData[currentYear][currentMonth]) monthData[currentYear][currentMonth] = {};
+            if (!monthData[currentYear][currentMonth][currentDay]) {
+                const dow = new Date(currentYear, currentMonth, currentDay).getDay();
+                if (dow === 1) {
+                    // จันทร์
+                    monthData[currentYear][currentMonth][currentDay] = [
+                        { title: "วิทยาศาสตร์", subtitle: "รายละเอียดงานวิทยาศาสตร์", images: [] },
+                        { title: "วิทยาศาสตร์", subtitle: "รายละเอียดงานวิทยาศาสตร์", images: [] },
+                        { title: "สังคม", subtitle: "รายละเอียดงานสังคม", images: [] },
+                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
+                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
+                        { title: "พระพุทธ", subtitle: "รายละเอียดงานพระพุทธ", images: [] },
+                        { title: "ค้นคว้าอิสระ", subtitle: "รายละเอียดงานค้นคว้าอิสระ", images: [] }
+                    ];
+                } else if (dow === 2) {
+                    // อังคาร
+                    monthData[currentYear][currentMonth][currentDay] = [
+                        { title: "ประวัติศาสตร์", subtitle: "รายละเอียดงานประวัติศาสตร์", images: [] },
+                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
+                        { title: "อังกฤษจุฑา", subtitle: "รายละเอียดงานอังกฤษจุฑา", images: [] },
+                        { title: "วิทฯและความงาม", subtitle: "รายละเอียดงานวิทฯและความงาม", images: [] },
+                        { title: "ศิลปะ", subtitle: "รายละเอียดงานศิลปะ", images: [] },
+                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
+                        { title: "ชุมชุม", subtitle: "รายละเอียดงานชุมชุม", images: [] }
+                    ];
+                } else if (dow === 3) {
+                    // พุธ
+                    monthData[currentYear][currentMonth][currentDay] = [
+                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
+                        { title: "การงาน", subtitle: "รายละเอียดงานการงาน", images: [] },
+                        { title: "สังคม", subtitle: "รายละเอียดงานสังคม", images: [] },
+                        { title: "วินยาศาสตร์", subtitle: "รายละเอียดงานวินยาศาสตร์", images: [] },
+                        { title: "การสร้างเว็บไซต์", subtitle: "รายละเอียดงานการสร้างเว็บไซต์", images: [] },
+                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
+                        { title: "ลูกเสือ/ยุวะ", subtitle: "รายละเอียดงานลูกเสือ/ยุวะ", images: [] }
+                    ];
+                } else if (dow === 4) {
+                    // พฤหัสฯ
+                    monthData[currentYear][currentMonth][currentDay] = [
+                        { title: "สุขศึกษา", subtitle: "รายละเอียดงานสุขศึกษา", images: [] },
+                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
+                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
+                        { title: "พละ", subtitle: "รายละเอียดงานพละ", images: [] },
+                        { title: "ศิลปะ", subtitle: "รายละเอียดงานศิลปะ", images: [] },
+                        { title: "กิจกรรมสาธารณะประโยชน์", subtitle: "รายละเอียดงานกิจกรรมสาธารณะประโยชน์", images: [] },
+                        { title: "กิจกรรมสาธารณะประโยชน์", subtitle: "รายละเอียดงานกิจกรรมสาธารณะประโยชน์", images: [] }
+                    ];
+                } else if (dow === 5) {
+                    // ศุกร์
+                    monthData[currentYear][currentMonth][currentDay] = [
+                        { title: "วิทยาการคำนวณ", subtitle: "รายละเอียดงานวิทยาการคำนวณ", images: [] },
+                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
+                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
+                        { title: "แนะแนว", subtitle: "รายละเอียดงานแนะแนว", images: [] },
+                        { title: "อังกฤษจุฑา", subtitle: "รายละเอียดงานอังกฤษจุฑา", images: [] },
+                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
+                        { title: "ค้นคว้าอิสระ", subtitle: "รายละเอียดงานค้นคว้าอิสระ", images: [] }
+                    ];
+                } else if (dow === 6) {
+                    // เสาร์ - ไม่มีตาราง
+                    monthData[currentYear][currentMonth][currentDay] = [];
+                } else if (dow === 0) {
+                    // อาทิตย์ - ไม่มีตาราง
+                    monthData[currentYear][currentMonth][currentDay] = [];
+                } else {
+                    monthData[currentYear][currentMonth][currentDay] = Array.from({length:7}, (_,i)=>({
+                        title: `ตารางที่ ${i+1}`,
+                        subtitle: `รายละเอียดงานที่ ${i+1}`,
+                        images: []
+                    }));
+                }
+            }
+            return monthData[currentYear][currentMonth][currentDay];
+        }
+
+        // --- Render Tables ---
+        function renderTables() {
+            const container = document.getElementById('tables-container');
+            container.innerHTML = '';
+            const tables = getDayTables();
+            tables.forEach((table, idx) => {
+                const div = document.createElement('div');
+                div.className = 'task-table';
+                div.innerHTML = `
+                    <button class="menu-btn" onclick="toggleMenu(${idx}, event)">&#x2261;</button>
+                    <div class="menu-popover" id="menu-popover-${idx}">
+                        <button onclick="menuEditTitle(${idx})">เปลี่ยนชื่อตาราง</button>
+                        <button onclick="menuEditSubtitle(${idx})">แก้ไขข้อความย่อย</button>
+                        <button onclick="menuDeleteTable(${idx})" style="color:#e57373;">ลบตารางนี้</button>
+                    </div>
+                    <div>
+                        <span class="task-title" id="title-${idx}">${table.title}</span>
+                        <input class="edit-input" id="title-input-${idx}" style="display:none" value="${table.title}" onblur="saveTitle(${idx})" onkeydown="if(event.key==='Enter'){saveTitle(${idx})}">
+                    </div>
+                    <div>
+                        <span id="subtitle-${idx}">${table.subtitle}</span>
+                        <input class="edit-input" id="subtitle-input-${idx}" style="display:none" value="${table.subtitle}" onblur="saveSubtitle(${idx})" onkeydown="if(event.key==='Enter'){saveSubtitle(${idx})}">
+                    </div>
+                    <div class="images" id="images-${idx}">
+                        ${table.images.map((img, imgIdx) => `
+                            <div>
+                                <img src="${img}" alt="img">
+                                <span class="remove-img-btn" onclick="removeImage(${idx},${imgIdx})">ลบ</span>
+                            </div>
+                        `).join('')}
+                        <button onclick="triggerImgUpload(${idx})">เพิ่มรูป</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            // ปุ่มเพิ่มตาราง (ทุกวัน)
+            const addBtn = document.createElement('button');
+            addBtn.textContent = '+ เพิ่มตาราง';
+            addBtn.style.display = 'block';
+            addBtn.style.margin = '24px auto 0 auto';
+            addBtn.style.padding = '12px 32px';
+            addBtn.style.fontSize = '1.1em';
+            addBtn.style.background = '#f5f5f5';
+            addBtn.style.border = '1px solid #e0e0e0';
+            addBtn.style.borderRadius = '10px';
+            addBtn.style.cursor = 'pointer';
+            addBtn.style.color = '#333';
+            addBtn.onmouseover = function() { addBtn.style.background = '#e0e0e0'; };
+            addBtn.onmouseout = function() { addBtn.style.background = '#f5f5f5'; };
+            addBtn.onclick = function() {
+                getDayTables().push({
+                    title: `ตารางที่ ${tables.length + 1}`,
+                    subtitle: `รายละเอียดงานที่ ${tables.length + 1}`,
+                    images: []
+                });
+                renderTables();
+            };
+            container.appendChild(addBtn);
+
+            // ปิดเมนูเมื่อคลิกข้างนอก
+            document.addEventListener('click', closeAllMenus);
+        }
+
+        // --- Menu logic ---
+        function toggleMenu(idx, event) {
+            event.stopPropagation();
+            closeAllMenus();
+            const menu = document.getElementById(`menu-popover-${idx}`);
+            if (menu) menu.classList.toggle('active');
+        }
+        function closeAllMenus() {
+            document.querySelectorAll('.menu-popover').forEach(m => m.classList.remove('active'));
+        }
+        function menuEditTitle(idx) {
+            closeAllMenus();
+            setTimeout(() => editTitle(idx), 50);
+        }
+        function menuEditSubtitle(idx) {
+            closeAllMenus();
+            setTimeout(() => editSubtitle(idx), 50);
+        }
+        function menuDeleteTable(idx) {
+            const tables = getDayTables();
+            if (tables.length > 1) {
+                tables.splice(idx, 1);
+                renderTables();
+            } else {
+                alert('ต้องมีอย่างน้อย 1 ตาราง');
+            }
+            saveToStorage();
+        }
+
+        // --- Edit logic ---
+        function editTitle(idx) {
+            document.getElementById(`title-${idx}`).style.display = 'none';
+            const input = document.getElementById(`title-input-${idx}`);
+            input.style.display = '';
+            input.focus();
+        }
+        function saveTitle(idx) {
+            const input = document.getElementById(`title-input-${idx}`);
+            getDayTables()[idx].title = input.value;
+            input.style.display = 'none';
+            document.getElementById(`title-${idx}`).style.display = '';
+            renderTables();
+            saveToStorage();
+        }
+        function editSubtitle(idx) {
+            document.getElementById(`subtitle-${idx}`).style.display = 'none';
+            const input = document.getElementById(`subtitle-input-${idx}`);
+            input.style.display = '';
+            input.focus();
+        }
+        function saveSubtitle(idx) {
+            const input = document.getElementById(`subtitle-input-${idx}`);
+            getDayTables()[idx].subtitle = input.value;
+            input.style.display = 'none';
+            document.getElementById(`subtitle-${idx}`).style.display = '';
+            renderTables();
+            saveToStorage();
+        }
+
+        // --- Image logic ---
+        function triggerImgUpload(idx) {
+            currentTableIdx = idx;
+            document.getElementById('img-upload').value = '';
+            document.getElementById('img-upload').click();
+        }
+        function handleImageUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    getDayTables()[currentTableIdx].images.push(e.target.result);
+                    renderTables();
+                    saveToStorage();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        function removeImage(tableIdx, imgIdx) {
+            getDayTables()[tableIdx].images.splice(imgIdx,1);
+            renderTables();
+            saveToStorage();
+        }
+
+        // --- Initial load ---
+        loadFromStorage();
+        renderMonthYearSelectors();
+        renderDayButtons();
+        renderTables();
+    </script>
+</body>
+</html>
