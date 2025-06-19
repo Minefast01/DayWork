@@ -2,919 +2,448 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>DayWork</title>
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <!-- Google Fonts: 'Sarabun' (TH) และ 'Inter' (EN) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sarabun:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Work Tick List</title>
     <style>
+        :root {
+            --primary: #1976d2;
+            --primary-light: #e3f2fd;
+            --accent: #43a047;
+            --border-radius: 10px;
+        }
         body {
-            font-family: 'Sarabun', 'Inter', 'Segoe UI', 'Prompt', Arial, sans-serif;
-            background: #eaf6fb; /* ฟ้าอ่อน */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 0;
-            font-size: 1.04em;
-            letter-spacing: 0.01em;
-        }
-        h1 {
-            text-align: center;
-            margin-top: 32px;
-            color: #2176ae;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
-        }
-        .month-selectors {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 28px;
-            margin-bottom: 8px;
-        }
-        .month-selectors select {
-            font-size: 1em;
-            padding: 6px 16px;
-            border-radius: 8px;
-            border: 1px solid #b3d8ef;
-            background: #f4fbff;
-            color: #2176ae;
-            outline: none;
-            transition: border 0.15s;
-        }
-        .month-selectors select:focus {
-            border-color: #2176ae;
-        }
-        .day-slider-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 18px;
-            margin-top: 24px;
-            margin-bottom: 8px;
-            user-select: none;
-        }
-        .day-slider-btn {
-            background: #d2eafd;
-            border: 1.5px solid #b3d8ef;
-            color: #2176ae;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            font-size: 1.4em;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.13s, border 0.13s, color 0.13s;
-            outline: none;
-        }
-        .day-slider-btn:disabled {
-            opacity: 0.5;
-            cursor: default;
-            background: #eaf6fb;
-            color: #b3d8ef;
-            border-color: #eaf6fb;
-        }
-        .day-slider-current {
-            font-size: 1.18em;
-            font-weight: 600;
-            color: #2176ae;
-            background: #f4fbff;
-            border-radius: 12px;
-            padding: 7px 22px;
-            border: 1.5px solid #b3d8ef;
-            min-width: 72px;
-            text-align: center;
-            letter-spacing: 0.05em;
-            box-shadow: 0 1px 4px rgba(33,118,174,0.04);
-        }
-        .day-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-            max-width: 900px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .day-buttons button {
-            background: #f4fbff;
-            border: 1px solid #b3d8ef;
-            border-radius: 18px;
-            padding: 8px 20px;
-            font-size: 1em;
-            color: #2176ae;
-            cursor: pointer;
-            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
-            box-shadow: 0 1px 2px rgba(33,118,174,0.03);
-        }
-        .day-buttons button:hover, .day-buttons button:focus {
-            background: #d2eafd;
-            border-color: #2176ae;
-            box-shadow: 0 2px 8px rgba(33,118,174,0.08);
-            outline: none;
-        }
-        .day-buttons button.selected {
-            background: #b3d8ef;
-            color: #145a8a;
-            font-weight: 600;
-            border-color: #2176ae;
-        }
-        .tables-container {
-            margin: 32px auto 0 auto;
-            max-width: 900px;
-            padding: 0 12px;
-        }
-        .task-table {
-            background: #f4fbff;
-            border-radius: 14px;
-            box-shadow: 0 2px 12px rgba(33,118,174,0.06);
-            padding: 22px 24px 18px 24px;
-            margin-bottom: 28px;
-            transition: box-shadow 0.2s;
-            border: 1px solid #b3d8ef;
-            position: relative;
-        }
-        .task-table:hover {
-            box-shadow: 0 4px 24px rgba(33,118,174,0.13);
-        }
-        .task-title {
-            font-weight: 500;
-            font-size: 1.13em;
-            color: #2176ae;
-            cursor: pointer;
-            border-radius: 6px;
-            padding: 2px 6px;
-            transition: background 0.15s;
-        }
-        .task-title:hover {
-            background: #eaf6fb;
-        }
-        .edit-input {
-            width: 100%;
-            font-size: 1em;
-            padding: 6px 10px;
-            border: 1px solid #b3d8ef;
-            border-radius: 6px;
-            margin-top: 4px;
-            margin-bottom: 4px;
-            background: #eaf6fb;
-            color: #2176ae;
-            outline: none;
-            box-sizing: border-box;
-        }
-        .edit-input:focus {
-            border-color: #2176ae;
-            background: #fff;
-        }
-        .images {
-            display: flex;
-            gap: 14px;
-            margin-top: 10px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-        .images img {
-            max-width: 70px;
-            max-height: 70px;
-            border-radius: 8px;
-            border: 1px solid #b3d8ef;
-            box-shadow: 0 1px 4px rgba(33,118,174,0.04);
-            background: #eaf6fb;
-        }
-        .images > div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .remove-img-btn {
-            margin-top: 4px;
-            color: #e57373;
-            cursor: pointer;
-            font-size: 0.92em;
-            border: none;
-            background: none;
-            padding: 0;
-            transition: color 0.15s;
-        }
-        .remove-img-btn:hover {
-            color: #b71c1c;
-            text-decoration: underline;
-        }
-        .images button {
-            background: #eaf6fb;
-            border: 1px solid #b3d8ef;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 0.98em;
-            color: #2176ae;
-            cursor: pointer;
-            transition: background 0.15s, border 0.15s;
-            margin-left: 0;
-            margin-top: 0;
-            height: 38px;
-            align-self: center;
-        }
-        .images button:hover {
-            background: #d2eafd;
-            border-color: #2176ae;
-        }
-        span[ondblclick] {
-            cursor: pointer;
-        }
-        .menu-btn {
-            position: absolute;
-            top: 14px;
-            right: 18px;
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            color: #b3d8ef;
-            cursor: pointer;
-            padding: 0 6px;
-            border-radius: 6px;
-            z-index: 2;
-            transition: background 0.15s, color 0.15s;
-        }
-        .menu-btn:hover, .menu-btn:focus {
-            background: #eaf6fb;
-            color: #2176ae;
-            outline: none;
-        }
-        .menu-popover {
-            position: absolute;
-            top: 38px;
-            right: 18px;
-            background: #fff;
-            border: 1px solid #b3d8ef;
-            border-radius: 8px;
-            box-shadow: 0 4px 16px rgba(33,118,174,0.08);
-            min-width: 140px;
-            z-index: 10;
-            padding: 6px 0;
-            display: none;
-        }
-        .menu-popover.active {
-            display: block;
-        }
-        .menu-popover button {
-            width: 100%;
-            background: none;
-            border: none;
-            text-align: left;
-            padding: 10px 18px;
-            font-size: 1em;
-            color: #2176ae;
-            cursor: pointer;
-            border-radius: 0;
-            transition: background 0.15s;
-        }
-        .menu-popover button:hover {
-            background: #eaf6fb;
-        }
-        .img-modal-bg {
-            position: fixed;
-            z-index: 9999;
-            left: 0; top: 0; right: 0; bottom: 0;
-            background: rgba(33,118,174,0.10);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            /* minimal: no border, no extra shadow */
-        }
-        .img-modal-img {
-            max-width: 96vw;
-            max-height: 90vh;
-            border-radius: 10px;
-            background: #fff;
-            border: none;
-            box-shadow: 0 2px 16px rgba(33,118,174,0.10);
-            animation: imgZoomIn 0.18s;
-            display: block;
-        }
-        .img-modal-close {
-            position: absolute;
-            top: 24px;
-            right: 32px;
-            background: rgba(255,255,255,0.7);
-            border: none;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            font-size: 1.6em;
-            color: #2176ae;
-            cursor: pointer;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 4px rgba(33,118,174,0.08);
-            transition: background 0.15s;
-        }
-        .img-modal-close:hover {
-            background: #eaf6fb;
-        }
-        @keyframes imgZoomIn {
-            from { transform: scale(0.92); opacity: 0.2; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        @media (max-width: 600px) {
-            .tables-container { padding: 0 2vw; }
-            .task-table { padding: 12px 8px; }
-            .images { gap: 7px; }
-        }
-        .add-table-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 24px auto 0 auto;
-            width: 54px;
-            height: 54px;
-            border-radius: 50%;
-            background: #d2eafd;
-            border: 2px solid #b3d8ef;
-            color: #2176ae;
-            font-size: 2.1em;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(33,118,174,0.07);
-            transition: background 0.15s, border 0.15s, color 0.15s;
-            outline: none;
-        }
-        .add-table-btn:hover, .add-table-btn:focus {
-            background: #b3d8ef;
-            color: #145a8a;
-            border-color: #2176ae;
-        }
-        .main-home {
+            background: #f5f7fa;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #eaf6fb;
         }
-        .main-home h1 {
-            font-size: 2.3em;
-            color: #2176ae;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
-            font-weight: 700;
+        h2 {
+            color: var(--primary);
+            margin-top: 32px;
             margin-bottom: 16px;
+            text-align: center;
             letter-spacing: 1px;
+            font-family: 'Segoe UI', 'Prompt', 'Kanit', 'Noto Sans Thai', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            font-size: 2.1em;
+            background: linear-gradient(90deg, #7b2ff2 0%, #1976d2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
         }
-        .main-home .creator {
-            font-size: 1.08em;
-            color: #2176ae;
-            margin-bottom: 36px;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
+        .container {
+            background: #fff;
+            max-width: 420px;
+            margin: 32px auto 0 auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 24px rgba(25, 118, 210, 0.08);
+            padding: 32px 28px 24px 28px;
         }
-        .main-home .go-btn {
-            background: #2176ae;
+        label {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 12px;
+            display: block;
+        }
+        #datePicker {
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: 1px solid #bdbdbd;
+            font-size: 1em;
+            margin-left: 8px;
+            background: #f9f9f9;
+            transition: border 0.2s;
+        }
+        #datePicker:focus {
+            border: 1.5px solid var(--primary);
+            outline: none;
+        }
+        #tickList {
+            margin-top: 28px;
+        }
+        .tick-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 14px;
+            background: var(--primary-light);
+            border-radius: 7px;
+            padding: 10px 14px;
+            box-shadow: 0 1px 4px rgba(25, 118, 210, 0.04);
+            transition: box-shadow 0.2s;
+        }
+        .tick-row:hover {
+            box-shadow: 0 2px 12px rgba(25, 118, 210, 0.10);
+        }
+        .tick-label {
+            margin-left: 10px;
+            margin-right: 12px;
+            font-weight: 500;
+            color: var(--primary);
+            min-width: 70px;
+        }
+        .tick-row input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            transition: box-shadow 0.18s, filter 0.18s;
+        }
+        .tick-row input[type="checkbox"]:active {
+            filter: brightness(0.85);
+            box-shadow: 0 0 4px var(--accent);
+        }
+        .add-btn {
+            margin-left: auto;
+            background: var(--primary);
             color: #fff;
             border: none;
-            border-radius: 28px;
-            padding: 18px 54px;
-            font-size: 1.25em;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 12px rgba(33,118,174,0.09);
-            transition: background 0.18s, box-shadow 0.18s;
-            margin-top: 10px;
-        }
-        .main-home .go-btn:hover, .main-home .go-btn:focus {
-            background: #145a8a;
-            box-shadow: 0 4px 24px rgba(33,118,174,0.13);
-        }
-        .hidden { display: none !important; }
-        .side-menu-btn {
-            position: fixed;
-            top: 18px;
-            left: 18px;
-            z-index: 20002;
-            background: #d2eafd;
-            color: #2176ae;
-            border: 2px solid #b3d8ef;
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.7em;
-            font-weight: 600;
+            width: 26px;
+            height: 26px;
+            font-size: 1em;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(33,118,174,0.07);
-            transition: background 0.15s, border 0.15s, color 0.15s, left 0.18s;
-            outline: none;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.18s;
+            padding: 0;
         }
-        .side-menu-btn.menu-open {
-            left: 238px; /* 220px (menu width) + 18px gap */
-            /* On mobile, adjust below */
+        .add-btn:active {
+            transform: scale(0.92);
+            box-shadow: 0 1px 2px rgba(25, 118, 210, 0.10);
         }
-        @media (max-width: 600px) {
-            .side-menu {
-                width: 80vw;
-                min-width: 140px;
-            }
-            .side-menu-btn.menu-open {
-                left: calc(80vw + 18px);
-            }
+        .add-btn span {
+            display: block;
+            line-height: 1;
+            font-size: 1.1em;
+            font-weight: bold;
         }
-        .side-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 220px;
-            height: 100vh;
-            background: #f4fbff;
-            border-right: 2px solid #b3d8ef;
-            box-shadow: 2px 0 16px rgba(33,118,174,0.07);
-            z-index: 20000;
+        .modal-bg {
             display: none;
-            flex-direction: column;
-            padding-top: 0;
-            animation: sideMenuIn 0.18s;
-        }
-        .side-menu.active {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.18);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* จัด modal ให้อยู่ตรงกลางจอ */
             display: flex;
+            transition: background 0.25s;
         }
-        .side-menu-header {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #2176ae;
-            padding: 28px 0 18px 28px;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
-            border-bottom: 1px solid #eaf6fb;
+        .modal {
+            background: #fff;
+            padding: 48px 40px 32px 40px;
+            border-radius: 32px;
+            min-width: 480px;
+            min-height: 420px;
+            max-width: 98vw;
+            max-height: 98vh;
+            box-shadow: 0 12px 48px 0 rgba(25, 118, 210, 0.18), 0 2px 8px 0 rgba(0,0,0,0.08);
+            position: relative;
+            animation: modalIn 0.18s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 18px;
+            overflow-y: auto;
+            /* จัด modal ให้อยู่ตรงกลางจอ */
+            margin: auto;
+            transition: box-shadow 0.25s, transform 0.18s;
+        }
+        @keyframes modalIn {
+            from { transform: translateY(40px) scale(0.97); opacity: 0; }
+            to { transform: none; opacity: 1; }
+        }
+        .modal label {
+            color: #333;
+            font-size: 1.1em;
             margin-bottom: 8px;
+            margin-top: 0;
+            align-self: center;
         }
-        .side-menu-link {
-            background: none;
+        .modal input {
+            display: block;
+            margin: 0 auto;
+            width: 80%;
+            max-width: 520px;
+            min-width: 220px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1.5px solid #bdbdbd;
+            font-size: 1.1em;
+            background: #f9f9f9;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        .modal textarea {
+            display: block;
+            margin: 0 auto;
+            width: 70vw;
+            max-width: 600px;
+            min-width: 220px;
+            min-height: 60vh;
+            max-height: 70vh;
+            padding: 18px 18px;
+            border-radius: 18px;
+            border: 1.5px solid #bdbdbd;
+            font-size: 1.15em;
+            background: #f9f9f9;
+            transition: border 0.2s;
+            box-sizing: border-box;
+            resize: vertical;
+            overflow: auto;
+            /* scrollbar style for Firefox */
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) #e3f2fd;
+        }
+        /* scrollbar style for Chrome, Edge, Safari */
+        .modal textarea::-webkit-scrollbar {
+            width: 10px;
+            border-radius: 8px;
+            background: #e3f2fd;
+        }
+        .modal textarea::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 8px;
+            border: 2px solid #e3f2fd;
+        }
+        .modal textarea::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+        .modal input:focus, .modal textarea:focus {
+            border: 2px solid var(--primary);
+            outline: none;
+        }
+        .modal .modal-actions {
+            text-align: center;
+            margin-top: 8px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 18px;
+            /* เพิ่มพื้นหลังจางๆและเงาเล็กน้อย */
+            background: #f9f9f9;
+            border-radius: 0 0 18px 18px;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.04);
+            padding: 18px 0 8px 0;
+            position: sticky;
+            bottom: 0;
+            z-index: 2;
+        }
+        .modal button {
+            padding: 12px 36px;
+            border-radius: 8px;
             border: none;
-            color: #2176ae;
-            font-size: 1.08em;
-            text-align: left;
-            padding: 14px 28px;
+            font-size: 1.1em;
+            margin: 0 8px;
             cursor: pointer;
-            font-family: 'Sarabun', 'Inter', Arial, sans-serif;
-            transition: background 0.13s, color 0.13s;
-            border-radius: 0 18px 18px 0;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.12s;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+            font-weight: bold;
+            background: linear-gradient(90deg, #7b2ff2 0%, #1976d2 100%);
+            color: #fff;
         }
-        .side-menu-link:hover, .side-menu-link:focus {
-            background: #d2eafd;
-            color: #145a8a;
+        .modal button:first-child {
+            background: #eee;
+            color: #444;
         }
-        @keyframes sideMenuIn {
-            from { transform: translateX(-40px); opacity: 0.2; }
-            to { transform: translateX(0); opacity: 1; }
+        .modal button:last-child {
+            background: linear-gradient(90deg, #7b2ff2 0%, #1976d2 100%);
+            color: #fff;
         }
-        #main-app-content {
-            /* for spacing if menu open on mobile */
+        .modal button:last-child:hover {
+            background: linear-gradient(90deg, #43a047 0%, #1976d2 100%);
+        }
+        /* ฟอนต์ gradient ม่วงฟ้า */
+        .gradient-text {
+            background: linear-gradient(90deg, #7b2ff2 0%, #1976d2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        /* ใช้กับ textarea ด้วย */
+        .modal textarea, .modal input, .modal label, .tick-label, .modal button, label, #tickList, .tick-row, .modal .modal-actions {
+            font-family: 'Segoe UI', 'Prompt', 'Kanit', 'Noto Sans Thai', Tahoma, Geneva, Verdana, sans-serif;
+            color: #4a3fa5;
+        }
+        .modal textarea, .modal input {
+            /* เพิ่ม effect สีอ่อน */
+            background: linear-gradient(90deg, #f3eaff 0%, #e3f2fd 100%);
+        }
+        .modal textarea::placeholder, .modal input::placeholder {
+            color: #a7a7d9;
+            opacity: 1;
+        }
+        .modal label, .tick-label, label {
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+        @media (max-width: 700px) {
+            .modal {
+                min-width: 96vw;
+                padding: 24px 2vw 18px 2vw;
+                border-radius: 18px;
+            }
+            .modal input {
+                width: 98%;
+                min-width: 0;
+            }
+            .modal textarea {
+                width: 94vw;
+                max-width: 98vw;
+            }
         }
         @media (max-width: 600px) {
-            .side-menu {
-                width: 80vw;
-                min-width: 140px;
-            }
-            #main-app-content {
-                padding-left: 0 !important;
-            }
+            .container { max-width: 98vw; padding: 12px 4vw 18px 4vw; }
         }
     </style>
 </head>
 <body>
-    <div id="main-home" class="main-home">
-        <h1>Welcome To DayWork.</h1>
-        <div class="creator">ผู้สร้างคือ Thananchai</div>
-        <button class="go-btn" onclick="showMainApp()">จัดการงาน</button>
+    <h2>Work Tick List</h2>
+    <div class="container">
+        <label>
+            วันที่:
+            <input type="date" id="datePicker">
+        </label>
+        <div id="tickList"></div>
     </div>
-    <div id="main-app" class="hidden">
-        <!-- เมนูซ้ายบน -->
-        <button id="side-menu-btn" class="side-menu-btn" onclick="toggleSideMenu()" aria-label="เมนู">&#9776;</button>
-        <nav id="side-menu" class="side-menu">
-            <div class="side-menu-header">DayWork</div>
-            <button class="side-menu-link" onclick="goHome()">หน้าหลัก</button>
-            <button class="side-menu-link" onclick="goManage()">หน้าจัดการงาน</button>
-        </nav>
-        <div id="main-app-content">
-            <h1>DayWork</h1>
-            <div class="month-selectors">
-                <select id="month-select" onchange="changeMonthYear()"></select>
-                <select id="year-select" onchange="changeMonthYear()"></select>
+    <!-- Modal for adding/editing task -->
+    <div class="modal-bg" id="modalBg" style="display:none;">
+        <div class="modal" onclick="event.stopPropagation()">
+            <label for="taskTitle">หัวข้อ</label>
+            <input type="text" id="taskTitle" placeholder="เพิ่มหรือแก้ไขหัวข้อ...">
+            <label for="taskDetail">ข้อความ/ข้อมูล</label>
+            <textarea id="taskDetail" placeholder="เพิ่มหรือแก้ไขข้อความหรือข้อมูล..."></textarea>
+            <div class="modal-actions">
+                <button onclick="closeModal()">ยกเลิก</button>
+                <button onclick="saveTask()">บันทึก</button>
             </div>
-            <div class="day-slider-container" id="day-slider">
-                <!-- สไลด์เลือกวันจะแสดงที่นี่ -->
-            </div>
-            <div class="tables-container" id="tables-container">
-                <!-- ตารางงานจะแสดงที่นี่ -->
-            </div>
-            <input type="file" id="img-upload" style="display:none" accept="image/*" multiple onchange="handleImageUpload(event)">
-            <div id="img-modal" style="display:none"></div>
         </div>
     </div>
     <script>
-        // --- Config ---
-        const monthNames = [
-            "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-            "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
-        ];
-        const daysInMonth = (month, year) => new Date(year, month + 1, 0).getDate();
+        const tickPerDay = 8;
+        const tickListDiv = document.getElementById('tickList');
+        const datePicker = document.getElementById('datePicker');
+        let tasks = {}; // { 'YYYY-MM-DD': [ {checked:bool, title:string, detail:string}, ... ] }
+        let currentTickIndex = null;
+        let currentDate = null;
 
-        // --- Data structure ---
-        // weekData[year][month][day] = [ {title, subtitle, images}, ...7 ตาราง ]
-        let monthData = {};
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth();
-        let currentDay = new Date().getDate();
-        let currentTableIdx = null;
-
-        // --- LocalStorage helpers ---
-        const STORAGE_KEY = 'work-schedule-data-v1';
-        const STORAGE_STATE_KEY = 'work-schedule-state-v1';
-
-        function saveToStorage() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(monthData));
-            localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify({
-                year: currentYear,
-                month: currentMonth,
-                day: currentDay
-            }));
-        }
-        function loadFromStorage() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            if (data) {
-                try { monthData = JSON.parse(data) || {}; } catch {}
-            }
-            const state = localStorage.getItem(STORAGE_STATE_KEY);
-            if (state) {
-                try {
-                    const s = JSON.parse(state);
-                    if (s && typeof s.year === 'number' && typeof s.month === 'number' && typeof s.day === 'number') {
-                        currentYear = s.year;
-                        currentMonth = s.month;
-                        currentDay = s.day;
-                    }
-                } catch {}
-            }
-        }
-
-        // --- UI: Month/Year Selectors ---
-        function renderMonthYearSelectors() {
-            const monthSel = document.getElementById('month-select');
-            const yearSel = document.getElementById('year-select');
-            monthSel.innerHTML = monthNames.map((m, i) =>
-                `<option value="${i}" ${i === currentMonth ? 'selected' : ''}>${m}</option>`
-            ).join('');
-            const thisYear = new Date().getFullYear();
-            let years = [];
-            for (let y = thisYear - 3; y <= thisYear + 3; y++) {
-                years.push(`<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y+543}</option>`);
-            }
-            yearSel.innerHTML = years.join('');
-        }
-
-        function changeMonthYear() {
-            currentMonth = parseInt(document.getElementById('month-select').value);
-            currentYear = parseInt(document.getElementById('year-select').value);
-            currentDay = 1;
-            renderDaySlider();
-            renderTables();
-            saveToStorage();
-        }
-
-        // --- UI: Day Slider ---
-        function renderDaySlider() {
-            const slider = document.getElementById('day-slider');
-            const numDays = daysInMonth(currentMonth, currentYear);
-
-            // ปุ่มย้อน
-            const prevBtn = document.createElement('button');
-            prevBtn.className = 'day-slider-btn';
-            prevBtn.innerHTML = '&lt;';
-            prevBtn.onclick = () => {
-                if (currentDay > 1) {
-                    currentDay--;
-                    renderDaySlider();
-                    renderTables();
-                }
-            };
-            prevBtn.disabled = currentDay <= 1;
-
-            // ปุ่มถัดไป
-            const nextBtn = document.createElement('button');
-            nextBtn.className = 'day-slider-btn';
-            nextBtn.innerHTML = '&gt;';
-            nextBtn.onclick = () => {
-                if (currentDay < numDays) {
-                    currentDay++;
-                    renderDaySlider();
-                    renderTables();
-                }
-            };
-            nextBtn.disabled = currentDay >= numDays;
-
-            // แสดงวันปัจจุบัน
-            const dayLabel = document.createElement('span');
-            dayLabel.className = 'day-slider-current';
-            dayLabel.textContent = `วันที่ ${currentDay}`;
-
-            slider.innerHTML = '';
-            slider.appendChild(prevBtn);
-            slider.appendChild(dayLabel);
-            slider.appendChild(nextBtn);
-        }
-
-        // --- Data helpers ---
-        function getDayTables() {
-            if (!monthData[currentYear]) monthData[currentYear] = {};
-            if (!monthData[currentYear][currentMonth]) monthData[currentYear][currentMonth] = {};
-            if (!monthData[currentYear][currentMonth][currentDay]) {
-                const dow = new Date(currentYear, currentMonth, currentDay).getDay();
-                if (dow === 1) {
-                    // จันทร์
-                    monthData[currentYear][currentMonth][currentDay] = [
-                        { title: "วิทยาศาสตร์", subtitle: "รายละเอียดงานวิทยาศาสตร์", images: [] },
-                        { title: "วิทยาศาสตร์", subtitle: "รายละเอียดงานวิทยาศาสตร์", images: [] },
-                        { title: "สังคม", subtitle: "รายละเอียดงานสังคม", images: [] },
-                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
-                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
-                        { title: "พระพุทธ", subtitle: "รายละเอียดงานพระพุทธ", images: [] },
-                        { title: "ค้นคว้าอิสระ", subtitle: "รายละเอียดงานค้นคว้าอิสระ", images: [] }
-                    ];
-                } else if (dow === 2) {
-                    // อังคาร
-                    monthData[currentYear][currentMonth][currentDay] = [
-                        { title: "ประวัติศาสตร์", subtitle: "รายละเอียดงานประวัติศาสตร์", images: [] },
-                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
-                        { title: "อังกฤษจุฑา", subtitle: "รายละเอียดงานอังกฤษจุฑา", images: [] },
-                        { title: "วิทฯและความงาม", subtitle: "รายละเอียดงานวิทฯและความงาม", images: [] },
-                        { title: "ศิลปะ", subtitle: "รายละเอียดงานศิลปะ", images: [] },
-                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
-                        { title: "ชุมชุม", subtitle: "รายละเอียดงานชุมชุม", images: [] }
-                    ];
-                } else if (dow === 3) {
-                    // พุธ
-                    monthData[currentYear][currentMonth][currentDay] = [
-                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
-                        { title: "การงาน", subtitle: "รายละเอียดงานการงาน", images: [] },
-                        { title: "สังคม", subtitle: "รายละเอียดงานสังคม", images: [] },
-                        { title: "วินยาศาสตร์", subtitle: "รายละเอียดงานวินยาศาสตร์", images: [] },
-                        { title: "การสร้างเว็บไซต์", subtitle: "รายละเอียดงานการสร้างเว็บไซต์", images: [] },
-                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
-                        { title: "ลูกเสือ/ยุวะ", subtitle: "รายละเอียดงานลูกเสือ/ยุวะ", images: [] }
-                    ];
-                } else if (dow === 4) {
-                    // พฤหัสฯ
-                    monthData[currentYear][currentMonth][currentDay] = [
-                        { title: "สุขศึกษา", subtitle: "รายละเอียดงานสุขศึกษา", images: [] },
-                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
-                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
-                        { title: "พละ", subtitle: "รายละเอียดงานพละ", images: [] },
-                        { title: "ศิลปะ", subtitle: "รายละเอียดงานศิลปะ", images: [] },
-                        { title: "กิจกรรมสาธารณะประโยชน์", subtitle: "รายละเอียดงานกิจกรรมสาธารณะประโยชน์", images: [] },
-                        { title: "กิจกรรมสาธารณะประโยชน์", subtitle: "รายละเอียดงานกิจกรรมสาธารณะประโยชน์", images: [] }
-                    ];
-                } else if (dow === 5) {
-                    // ศุกร์
-                    monthData[currentYear][currentMonth][currentDay] = [
-                        { title: "วิทยาการคำนวณ", subtitle: "รายละเอียดงานวิทยาการคำนวณ", images: [] },
-                        { title: "ภาษาไทย", subtitle: "รายละเอียดงานภาษาไทย", images: [] },
-                        { title: "คณิตฯ", subtitle: "รายละเอียดงานคณิตฯ", images: [] },
-                        { title: "แนะแนว", subtitle: "รายละเอียดงานแนะแนว", images: [] },
-                        { title: "อังกฤษจุฑา", subtitle: "รายละเอียดงานอังกฤษจุฑา", images: [] },
-                        { title: "อังกฤษสมหญิง", subtitle: "รายละเอียดงานอังกฤษสมหญิง", images: [] },
-                        { title: "ค้นคว้าอิสระ", subtitle: "รายละเอียดงานค้นคว้าอิสระ", images: [] }
-                    ];
-                } else if (dow === 6) {
-                    // เสาร์ - ไม่มีตาราง
-                    monthData[currentYear][currentMonth][currentDay] = [];
-                } else if (dow === 0) {
-                    // อาทิตย์ - ไม่มีตาราง
-                    monthData[currentYear][currentMonth][currentDay] = [];
-                } else {
-                    monthData[currentYear][currentMonth][currentDay] = Array.from({length:7}, (_,i)=>({
-                        title: `ตารางที่ ${i+1}`,
-                        subtitle: `รายละเอียดงานที่ ${i+1}`,
-                        images: []
-                    }));
+        function autoResizeTextarea(el) {
+            el.style.height = 'auto';
+            el.style.height = (el.scrollHeight) + 'px';
+            // ถ้า textarea สูงเกิน modal ให้ modal เลื่อน scroll เอง
+            const modal = el.closest('.modal');
+            if (modal) {
+                // ถ้า textarea ล่างสุดเกิน modal ให้ scroll ตาม
+                if (el.getBoundingClientRect().bottom > modal.getBoundingClientRect().bottom) {
+                    modal.scrollTop = el.offsetTop + el.offsetHeight - modal.clientHeight;
                 }
             }
-            return monthData[currentYear][currentMonth][currentDay];
         }
 
-        // --- Render Tables ---
-        function renderTables() {
-            const container = document.getElementById('tables-container');
-            container.innerHTML = '';
-            const tables = getDayTables();
-            tables.forEach((table, idx) => {
-                const div = document.createElement('div');
-                div.className = 'task-table';
-                div.innerHTML = `
-                    <button class="menu-btn" onclick="toggleMenu(${idx}, event)">&#x2261;</button>
-                    <div class="menu-popover" id="menu-popover-${idx}">
-                        <button onclick="menuEditTitle(${idx})">เปลี่ยนชื่อตาราง</button>
-                        <button onclick="menuEditSubtitle(${idx})">แก้ไขข้อความย่อย</button>
-                        <button onclick="menuDeleteTable(${idx})" style="color:#e57373;">ลบตารางนี้</button>
-                    </div>
-                    <div>
-                        <span class="task-title" id="title-${idx}">${table.title}</span>
-                        <input class="edit-input" id="title-input-${idx}" style="display:none" value="${table.title}" onblur="saveTitle(${idx})" onkeydown="if(event.key==='Enter'){saveTitle(${idx})}">
-                    </div>
-                    <div>
-                        <span id="subtitle-${idx}">${table.subtitle}</span>
-                        <input class="edit-input" id="subtitle-input-${idx}" style="display:none" value="${table.subtitle}" onblur="saveSubtitle(${idx})" onkeydown="if(event.key==='Enter'){saveSubtitle(${idx})}">
-                    </div>
-                    <div class="images" id="images-${idx}">
-                        ${table.images.map((img, imgIdx) => `
-                            <div>
-                                <img src="${img}" alt="img" onclick="showImgModal('${encodeURIComponent(img)}')" style="cursor:zoom-in;">
-                                <span class="remove-img-btn" onclick="removeImage(${idx},${imgIdx})">ลบ</span>
-                            </div>
-                        `).join('')}
-                        <button onclick="triggerImgUpload(${idx})">เพิ่มรูป</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-
-            // ปุ่มเพิ่มตาราง (ทุกวัน) เป็นปุ่ม + วงกลมสีฟ้าอ่อน
-            const addBtn = document.createElement('button');
-            addBtn.className = 'add-table-btn';
-            addBtn.title = 'เพิ่มตาราง';
-            addBtn.innerHTML = '<span aria-label="เพิ่มตาราง" style="line-height:1;">+</span>';
-            addBtn.onclick = function() {
-                getDayTables().push({
-                    title: `ตารางที่ ${tables.length + 1}`,
-                    subtitle: `รายละเอียดงานที่ ${tables.length + 1}`,
-                    images: []
-                });
-                renderTables();
-            };
-            container.appendChild(addBtn);
-
-            // ปิดเมนูเมื่อคลิกข้างนอก
-            document.addEventListener('click', closeAllMenus);
-        }
-
-        // --- Menu logic ---
-        function toggleMenu(idx, event) {
-            event.stopPropagation();
-            closeAllMenus();
-            const menu = document.getElementById(`menu-popover-${idx}`);
-            if (menu) menu.classList.toggle('active');
-        }
-        function closeAllMenus() {
-            document.querySelectorAll('.menu-popover').forEach(m => m.classList.remove('active'));
-        }
-        function menuEditTitle(idx) {
-            closeAllMenus();
-            setTimeout(() => editTitle(idx), 50);
-        }
-        function menuEditSubtitle(idx) {
-            closeAllMenus();
-            setTimeout(() => editSubtitle(idx), 50);
-        }
-        function menuDeleteTable(idx) {
-            const tables = getDayTables();
-            if (tables.length > 1) {
-                tables.splice(idx, 1);
-                renderTables();
-            } else {
-                alert('ต้องมีอย่างน้อย 1 ตาราง');
+        function renderTicks(dateStr) {
+            tickListDiv.innerHTML = '';
+            if (!tasks[dateStr]) {
+                tasks[dateStr] = Array.from({length: tickPerDay}, () => ({checked: false, title: '', detail: ''}));
             }
-            saveToStorage();
-        }
+            tasks[dateStr].forEach((tick, i) => {
+                const row = document.createElement('div');
+                row.className = 'tick-row';
 
-        // --- Edit logic ---
-        function editTitle(idx) {
-            document.getElementById(`title-${idx}`).style.display = 'none';
-            const input = document.getElementById(`title-input-${idx}`);
-            input.style.display = '';
-            input.focus();
-        }
-        function saveTitle(idx) {
-            const input = document.getElementById(`title-input-${idx}`);
-            getDayTables()[idx].title = input.value;
-            input.style.display = 'none';
-            document.getElementById(`title-${idx}`).style.display = '';
-            renderTables();
-            saveToStorage();
-        }
-        function editSubtitle(idx) {
-            document.getElementById(`subtitle-${idx}`).style.display = 'none';
-            const input = document.getElementById(`subtitle-input-${idx}`);
-            input.style.display = '';
-            input.focus();
-        }
-        function saveSubtitle(idx) {
-            const input = document.getElementById(`subtitle-input-${idx}`);
-            getDayTables()[idx].subtitle = input.value;
-            input.style.display = 'none';
-            document.getElementById(`subtitle-${idx}`).style.display = '';
-            renderTables();
-            saveToStorage();
-        }
-
-        // --- Image logic ---
-        function triggerImgUpload(idx) {
-            currentTableIdx = idx;
-            document.getElementById('img-upload').value = '';
-            document.getElementById('img-upload').click();
-        }
-        function handleImageUpload(event) {
-            const files = Array.from(event.target.files);
-            if (!files.length) return;
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    getDayTables()[currentTableIdx].images.push(e.target.result);
-                    renderTables();
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = tick.checked;
+                checkbox.onchange = () => {
+                    tick.checked = checkbox.checked;
                     saveToStorage();
                 };
-                reader.readAsDataURL(file);
+
+                const label = document.createElement('span');
+                label.className = 'tick-label';
+                label.textContent = `งานที่ ${i+1}`;
+
+                const addBtn = document.createElement('button');
+                addBtn.innerHTML = '<span>+</span>';
+                addBtn.className = 'add-btn';
+                addBtn.title = 'เพิ่ม/แก้ไขหัวข้อและข้อมูล';
+                addBtn.onclick = () => openModal(i);
+
+                row.appendChild(checkbox);
+                row.appendChild(label);
+                row.appendChild(addBtn);
+
+                tickListDiv.appendChild(row);
             });
         }
-        function removeImage(tableIdx, imgIdx) {
-            getDayTables()[tableIdx].images.splice(imgIdx,1);
-            renderTables();
+
+        // เพิ่ม fade-in/fade-out effect ให้ modal-bg
+        function openModal(tickIndex) {
+            currentTickIndex = tickIndex;
+            currentDate = datePicker.value;
+            const tick = tasks[currentDate][tickIndex];
+            document.getElementById('taskTitle').value = tick.title || '';
+            document.getElementById('taskDetail').value = tick.detail || '';
+            const modalBg = document.getElementById('modalBg');
+            modalBg.style.opacity = '0';
+            modalBg.style.display = 'flex';
+            setTimeout(() => {
+                modalBg.style.opacity = '1';
+                document.getElementById('taskTitle').focus();
+                autoResizeTextarea(document.getElementById('taskDetail'));
+            }, 10);
+        }
+
+        function closeModal() {
+            const modalBg = document.getElementById('modalBg');
+            modalBg.style.opacity = '1';
+            modalBg.style.transition = 'opacity 0.18s';
+            modalBg.style.opacity = '0';
+            setTimeout(() => {
+                modalBg.style.display = 'none';
+                modalBg.style.transition = '';
+            }, 180);
+        }
+
+        function saveTask() {
+            const title = document.getElementById('taskTitle').value;
+            const detail = document.getElementById('taskDetail').value;
+            tasks[currentDate][currentTickIndex].title = title;
+            tasks[currentDate][currentTickIndex].detail = detail;
             saveToStorage();
+            renderTicks(currentDate);
+            closeModal();
         }
 
-        // --- Image Modal ---
-        function showImgModal(imgData) {
-            const modal = document.getElementById('img-modal');
-            modal.innerHTML = `
-                <div class="img-modal-bg" onclick="hideImgModal(event)">
-                    <button class="img-modal-close" onclick="hideImgModal(event)" title="ปิด">&times;</button>
-                    <img class="img-modal-img" src="${decodeURIComponent(imgData)}" onclick="event.stopPropagation()">
-                </div>
-            `;
-            modal.style.display = '';
-            document.body.style.overflow = 'hidden';
-        }
-        function hideImgModal(e) {
-            if (e) e.stopPropagation();
-            const modal = document.getElementById('img-modal');
-            modal.style.display = 'none';
-            modal.innerHTML = '';
-            document.body.style.overflow = '';
+        function saveToStorage() {
+            localStorage.setItem('work-tasks', JSON.stringify(tasks));
         }
 
-        // --- Side Menu logic ---
-        function toggleSideMenu() {
-            const menu = document.getElementById('side-menu');
-            const btn = document.getElementById('side-menu-btn');
-            menu.classList.toggle('active');
-            btn.classList.toggle('menu-open', menu.classList.contains('active'));
+        function loadFromStorage() {
+            const data = localStorage.getItem('work-tasks');
+            if (data) tasks = JSON.parse(data);
         }
-        function closeSideMenu() {
-            document.getElementById('side-menu').classList.remove('active');
-            document.getElementById('side-menu-btn').classList.remove('menu-open');
-        }
-        // ปิดเมนูเมื่อคลิกข้างนอก
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('side-menu');
-            const btn = document.getElementById('side-menu-btn');
-            if (!menu.contains(e.target) && e.target !== btn) {
-                menu.classList.remove('active');
-                btn.classList.remove('menu-open');
-            }
+
+        datePicker.onchange = () => {
+            renderTicks(datePicker.value);
+        };
+
+        // ปิด modal เมื่อคลิกพื้นหลัง
+        document.getElementById('modalBg').onclick = closeModal;
+
+        // textarea auto expand
+        const taskDetail = document.getElementById('taskDetail');
+        taskDetail.addEventListener('input', function() {
+            autoResizeTextarea(this);
         });
 
-        // --- Navigation ---
-        function goHome() {
-            document.getElementById('main-app').classList.add('hidden');
-            document.getElementById('main-home').classList.remove('hidden');
-            closeSideMenu();
-        }
-        function goManage() {
-            document.getElementById('main-home').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            closeSideMenu();
-            // ป้องกัน render ซ้ำ
-            if (!window._dayworkAppLoaded) {
-                renderMonthYearSelectors();
-                renderDaySlider();
-                renderTables();
-                window._dayworkAppLoaded = true;
-            }
-        }
-
-        // --- Main/Home logic ---
-        function showMainApp() {
-            goManage();
-        }
-
-        // --- Initial load ---
+        // Init
         loadFromStorage();
-        // ไม่แสดง main-app ทันที
-        // renderMonthYearSelectors();
-        // renderDaySlider();
-        // renderTables();
+        const today = new Date().toISOString().slice(0,10);
+        datePicker.value = today;
+        renderTicks(today);
     </script>
 </body>
 </html>
