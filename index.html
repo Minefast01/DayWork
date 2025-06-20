@@ -477,6 +477,34 @@
         .youtube-search-bar a.youtube-link {
             display: none !important;
         }
+
+        /* Global YouTube Player */
+        #global-youtube-player-container {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 2000;
+            max-width: 340px;
+            width: 90vw;
+        }
+        #global-youtube-player-inner {
+            background: #fff6fa;
+            border-radius: 14px;
+            box-shadow: 0 2px 16px rgba(255, 105, 135, 0.13);
+            padding: 10px 10px 6px 10px;
+            position: relative;
+        }
+        #close-global-youtube-player {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 1.3em;
+            color: #ff5e7e;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -510,6 +538,15 @@
         <div class="mobile-sidebar" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeMobileSidebar(event)" aria-label="ปิดเมนู">&times;</button>
             <div id="mobile-sidebar-tools"></div>
+        </div>
+    </div>
+
+    <!-- Global YouTube Player -->
+    <div id="global-youtube-player-container" style="display:none; position:fixed; bottom:24px; right:24px; z-index:2000; max-width:340px; width:90vw;">
+        <div id="global-youtube-player-inner" style="background:#fff6fa; border-radius:14px; box-shadow:0 2px 16px rgba(255,105,135,0.13); padding:10px 10px 6px 10px; position:relative;">
+            <button id="close-global-youtube-player" style="position:absolute; top:4px; right:8px; background:none; border:none; font-size:1.3em; color:#ff5e7e; cursor:pointer;">&times;</button>
+            <div id="global-youtube-player"></div>
+            <div id="global-youtube-title" style="font-size:0.97em;color:#a1002b;margin-top:2px;text-align:center;"></div>
         </div>
     </div>
 
@@ -618,10 +655,6 @@
             });
         }
 
-        // ปรับให้ค้นหาอัตโนมัติแบบ YouTube (แนะนำวิดีโอทันทีที่พิมพ์)
-        // เพิ่ม debounce เพื่อไม่ให้ยิง API ทุก keypress
-        let youtubeSearchTimeout = {};
-
         function renderYoutubeSearchBar(targetId) {
             const container = document.getElementById(targetId);
             if (!container) return;
@@ -629,40 +662,27 @@
                 <div class="youtube-search-bar">
                     <label>ค้นหาเพลง YouTube</label>
                     <div class="youtube-search-row">
-                        <input type="text" id="${targetId}-input" placeholder="ชื่อเพลงหรือศิลปิน..." oninput="debouncedSearchYoutube('${targetId}')" />
+                        <input type="text" id="${targetId}-input" placeholder="ชื่อเพลงหรือศิลปิน..." oninput="searchYoutube('${targetId}')" />
                         <button onclick="searchYoutube('${targetId}')">ค้นหา</button>
                     </div>
                     <div id="${targetId}-results"></div>
-                    <div id="${targetId}-player"></div>
                 </div>
             `;
-        }
-
-        function debouncedSearchYoutube(targetId) {
-            // ยกเลิก timeout เดิมถ้ามี
-            if (youtubeSearchTimeout[targetId]) clearTimeout(youtubeSearchTimeout[targetId]);
-            // รอ 400ms หลังหยุดพิมพ์ค่อยค้นหา
-            youtubeSearchTimeout[targetId] = setTimeout(() => {
-                searchYoutube(targetId);
-            }, 400);
         }
 
         async function searchYoutube(targetId) {
             const input = document.getElementById(`${targetId}-input`);
             const resultsDiv = document.getElementById(`${targetId}-results`);
-            const player = document.getElementById(`${targetId}-player`);
             const query = input.value.trim();
             if (!query) {
                 resultsDiv.innerHTML = "";
-                player.innerHTML = "";
                 return;
             }
 
             resultsDiv.innerHTML = `<div style="color:#a1002b;padding:8px;">กำลังค้นหา...</div>`;
-            player.innerHTML = "";
 
             try {
-                // ใช้ yt.lemnoslife.com public API (no API key, CORS ok)
+                // Use yt.lemnoslife.com public API (no API key, CORS ok)
                 let items = [];
                 try {
                     const res = await fetch(`https://yt.lemnoslife.com/noKey/search?part=snippet&type=video&q=${encodeURIComponent(query)}`);
@@ -703,7 +723,7 @@
 
                 resultsDiv.innerHTML = `<div class="youtube-results-list">
                     ${items.map(item => `
-                        <div class="youtube-result-item" onclick="playYoutubeVideo('${targetId}','${item.videoId.replace(/'/g, "\\'")}',\`${item.title.replace(/`/g, "\\`")}\`)">
+                        <div class="youtube-result-item" onclick="playYoutubeVideo('${item.videoId.replace(/'/g, "\\'")}',\`${item.title.replace(/`/g, "\\`")}\`)">
                             <img class="youtube-result-thumb" src="${item.thumbnail || `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`}" alt="thumb">
                             <span class="youtube-result-title">${item.title}</span>
                         </div>
@@ -714,15 +734,29 @@
             }
         }
 
-        function playYoutubeVideo(targetId, videoId, title) {
-            const player = document.getElementById(`${targetId}-player`);
-            if (!player) return;
+        // --- GLOBAL YOUTUBE PLAYER LOGIC ---
+        function showGlobalYoutubePlayer(videoId, title) {
+            const container = document.getElementById("global-youtube-player-container");
+            const player = document.getElementById("global-youtube-player");
+            const titleDiv = document.getElementById("global-youtube-title");
             player.innerHTML = `
                 <div class="youtube-player">
                     <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen title="${title}"></iframe>
                 </div>
-                <div style="font-size:0.97em;color:#a1002b;margin-top:2px;text-align:center;">${title}</div>
             `;
+            titleDiv.innerText = title;
+            container.style.display = "block";
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("close-global-youtube-player").onclick = function () {
+                document.getElementById("global-youtube-player-container").style.display = "none";
+                document.getElementById("global-youtube-player").innerHTML = "";
+                document.getElementById("global-youtube-title").innerText = "";
+            };
+        });
+
+        function playYoutubeVideo(videoId, title) {
+            showGlobalYoutubePlayer(videoId, title);
         }
 
         function openMobileSidebar() {
