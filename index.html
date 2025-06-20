@@ -338,27 +338,59 @@
             .main-layout {
                 flex-direction: column;
                 gap: 0;
+                padding: 0 0 40px 0;
             }
             .sidebar {
-                display: none !important;
+                display: flex !important;
+                flex-direction: column;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                margin-top: 0;
+                margin-bottom: 12px;
+                border-radius: 0 0 18px 18px;
+                box-shadow: 0 2px 12px rgba(255, 105, 135, 0.08);
+                align-self: stretch;
             }
             .hamburger {
-                display: block;
+                display: none !important;
             }
             .content-area {
                 width: 100%;
                 max-width: 100%;
+                padding: 0 0 0 0;
+            }
+            #global-youtube-player-container {
+                right: 4vw !important;
+                left: 4vw !important;
+                bottom: 12px !important;
+                max-width: 98vw !important;
+                width: 92vw !important;
             }
         }
         @media (max-width: 500px) {
-            .mobile-sidebar {
-                width: 98vw;
-                max-width: 98vw;
-                padding: 18px 6vw 18px 6vw;
+            .sidebar {
+                padding: 14px 4vw 12px 4vw;
             }
             .add-task-bar input {
                 width: 100%;
                 min-width: 0;
+                font-size: 1em;
+                padding: 8px 8px;
+            }
+            .add-task-bar button {
+                font-size: 1em;
+                padding: 0.5em 1em;
+            }
+            #global-youtube-player-inner {
+                padding: 6px 2vw 4px 2vw;
+            }
+        }
+
+        /* Hide mobile sidebar overlay for mobile layout */
+        @media (max-width: 800px) {
+            .mobile-sidebar-overlay {
+                display: none !important;
             }
         }
 
@@ -533,7 +565,7 @@
         </div>
     </div>
 
-    <!-- Mobile sidebar overlay -->
+    <!-- Mobile sidebar overlay (hidden in mobile layout) -->
     <div class="mobile-sidebar-overlay" id="mobileSidebarOverlay" onclick="closeMobileSidebar(event)">
         <div class="mobile-sidebar" onclick="event.stopPropagation()">
             <button class="close-btn" onclick="closeMobileSidebar(event)" aria-label="ปิดเมนู">&times;</button>
@@ -889,9 +921,11 @@
             renderTasks();
         }
 
-        // Hamburger menu event
+        // Hamburger menu event (disable in mobile)
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("hamburger").addEventListener("click", openMobileSidebar);
+            if (window.innerWidth > 800) {
+                document.getElementById("hamburger").addEventListener("click", openMobileSidebar);
+            }
         });
 
         // Update realtime clock every second for all clocks
