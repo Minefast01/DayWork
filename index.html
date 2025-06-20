@@ -409,10 +409,37 @@
                     gap: 12px;
                 }
                 .sidebar button {
-                    font-size: 1.08em;
-                    padding: 0.7em 1.5em;
-                    margin-top: 14px;
+                    font-size: 1.13em;
+                    padding: 0.7em 1.7em;
                     border-radius: 22px;
+                    background: linear-gradient(90deg, #ffb6c1 60%, #ff5e7e 100%);
+                    color: #fff;
+                    box-shadow: 0 2px 8px rgba(255, 105, 135, 0.13);
+                    border: none;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                    margin-top: 14px;
+                    transition: background 0.18s, box-shadow 0.18s, color 0.18s;
+                }
+                .sidebar button:hover {
+                    background: linear-gradient(90deg, #ff5e7e 60%, #a1002b 100%);
+                    color: #fff;
+                    box-shadow: 0 4px 16px rgba(255, 105, 135, 0.18);
+                }
+                /* ปุ่มลบงานทั้งหมดโดยเฉพาะ */
+                .sidebar button:last-child {
+                    background: linear-gradient(90deg, #fff0f5 60%, #ff5e7e 100%);
+                    color: #a1002b;
+                    border: 2px solid #ff5e7e;
+                    font-weight: bold;
+                    margin-top: 18px;
+                    box-shadow: 0 2px 8px rgba(255, 105, 135, 0.10);
+                }
+                .sidebar button:last-child:hover {
+                    background: linear-gradient(90deg, #ff5e7e 60%, #a1002b 100%);
+                    color: #fff;
+                    border: 2px solid #a1002b;
+                    box-shadow: 0 4px 16px rgba(255, 105, 135, 0.18);
                 }
                 .sidebar-tools {
                     gap: 22px;
